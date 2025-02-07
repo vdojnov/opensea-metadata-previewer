@@ -166,61 +166,83 @@ function previewMetadata() {
     }
 }
 
-// Add sample data when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    const sampleMetadata = {
-        "name": "Enhanced NFT Example",
-        "description": "This NFT demonstrates all OpenSea display types.",
-        "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
-        "attributes": [
-            {
-                "trait_type": "Base",
-                "value": "Starfish"
-            },
-            {
-                "display_type": "boost_number",
-                "trait_type": "Power Level",
-                "value": 40
-            },
-            {
-                "display_type": "boost_percentage",
-                "trait_type": "Stamina Increase",
-                "value": 10
-            },
-            {
-                "display_type": "number",
-                "trait_type": "Generation",
-                "value": 2
-            },
-            {
-                "display_type": "date",
-                "trait_type": "Created Date",
-                "value": 1546360800
-            },
-            {
-                "display_type": "date",
-                "trait_type": "Expiration Date",
-                "value": 1893456000
-            },
-            {
-                "trait_type": "Rarity",
-                "value": "Legendary"
-            },
-            {
-                "display_type": "boost_number",
-                "trait_type": "Defense Bonus",
-                "value": 15
-            },
-            {
-                "display_type": "boost_percentage",
-                "trait_type": "Critical Hit Chance",
-                "value": 25
-            }
-        ]
-    };
+// Update the DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', async () => {
+    // Set the default URL in the input field
+    const defaultUrl = 'https://api.cryptokitties.co/tokenuri/735070';
+    document.getElementById('urlInput').value = defaultUrl;
     
-    document.getElementById('jsonInput').value = JSON.stringify(sampleMetadata, null, 2);
-    previewMetadata();
+    try {
+        // Fetch the CryptoKitties metadata
+        const response = await fetch(defaultUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const metadata = await response.json();
+        
+        // Update the JSON input with the fetched data
+        document.getElementById('jsonInput').value = JSON.stringify(metadata, null, 2);
+        
+        // Preview the metadata
+        previewMetadata();
+    } catch (error) {
+        alert('Error fetching initial metadata: ' + error.message);
+        
+        // If fetch fails, fall back to the sample metadata
+        const sampleMetadata = {
+            "name": "Enhanced NFT Example",
+            "description": "This NFT demonstrates all OpenSea display types.",
+            "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+            "attributes": [
+                {
+                    "trait_type": "Base",
+                    "value": "Starfish"
+                },
+                {
+                    "display_type": "boost_number",
+                    "trait_type": "Power Level",
+                    "value": 40
+                },
+                {
+                    "display_type": "boost_percentage",
+                    "trait_type": "Stamina Increase",
+                    "value": 10
+                },
+                {
+                    "display_type": "number",
+                    "trait_type": "Generation",
+                    "value": 2
+                },
+                {
+                    "display_type": "date",
+                    "trait_type": "Created Date",
+                    "value": 1546360800
+                },
+                {
+                    "display_type": "date",
+                    "trait_type": "Expiration Date",
+                    "value": 1893456000
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "Legendary"
+                },
+                {
+                    "display_type": "boost_number",
+                    "trait_type": "Defense Bonus",
+                    "value": 15
+                },
+                {
+                    "display_type": "boost_percentage",
+                    "trait_type": "Critical Hit Chance",
+                    "value": 25
+                }
+            ]
+        };
+        
+        document.getElementById('jsonInput').value = JSON.stringify(sampleMetadata, null, 2);
+        previewMetadata();
+    }
 });
 
 // Add this function to fetch metadata from URL
